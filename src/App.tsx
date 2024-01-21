@@ -5,6 +5,7 @@ import axios from 'axios';
 import {MainStore} from './store/index';
 import RootRoute from './route/index';
 import copy from 'copy-to-clipboard';
+import {request, DIRECTUS_URL_PREFIX} from './directus';
 
 export default function (): JSX.Element {
   const store = ((window as any).store = MainStore.create(
@@ -14,6 +15,10 @@ export default function (): JSX.Element {
         config = config || {};
         config.headers = config.headers || headers || {};
         config.withCredentials = true;
+
+        if (url.startsWith(DIRECTUS_URL_PREFIX)) {
+          return request({url, method, data, config});
+        }
 
         if (method !== 'post' && method !== 'put' && method !== 'patch') {
           if (data) {
